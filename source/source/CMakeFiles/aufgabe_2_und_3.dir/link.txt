@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++17 -Wall   CMakeFiles/aufgabe_2_und_3.dir/aufgabe_2_und_3.cpp.o  -o aufgabe_2_und_3 
