@@ -87,7 +87,7 @@ class List {
             last_{nullptr},
             first_{nullptr},
             size_{0}
-            {};
+            {}
 
 /* ... */
 // TODO : Copy - Konstruktor using Deep - Copy semantics ( Aufgabe 4.8)
@@ -103,8 +103,10 @@ class List {
 // TODO : operator == ( Aufgabe 4.7)
 /* ... */
 // TODO : operator != ( Aufgabe 4.7)
-/* ... */
+        /* ... */
         ~List () {
+            std::cout << "The List with " << size() << " elements is destroyed\n";
+            clear();
 // TO IMPLEMENT PROPERLY
         }
 /* ... */
@@ -113,20 +115,30 @@ class List {
 // // not implemented yet
             return ListIterator <T>{};
         }
+
 /* ... */
         ListIterator <T> end() {
             assert(! empty());
 // // not implemented yet
             return ListIterator <T>{};
         }
-/* ... */
+
+            /* löscht alle elemente aus der liste */
         void clear() {
+            while(!empty()){
+                pop_front();
+              }
+        }
+
+
+
 // // not implemented yet
-        }/* ... */
+        /* ... */
 // TODO : member function insert
 /* ... */
 // TODO : member function reverse
-/* ... */
+
+            /* fügt vorne ein element hinzu */
         void push_front(T const& element ){
             ListNode<T>* ptr = new ListNode<T>; 
             ptr->value = element; 
@@ -143,42 +155,41 @@ class List {
             }
             size_++;
         }
-/* ... */
+             /* soll hinten an der list ein element einfügen  */
         void push_back(T const& element ) {
             ListNode<T>* ptr = new ListNode<T>{element, last_, nullptr};
             
-            if(empty()){
+            if(empty()){ //falls die liste leer ist, ist das neue element gleichzeitig das erste und letzte element
                 first_ = ptr;
                 last_ = ptr;
             }
-            else{
+            else{ //next des letzten elements zeigt nun auf das neue element
                 last_->next = ptr;
-                last_ = ptr; 
-
-            
              }
-             size_++;
+
+             last_ = ptr; //ptr ist nun das neue letzte element
+             ++size_;
         }
-/* ... */
+             /* soll vorne an der liste ein element anfügen */
         void pop_front() {
             if (empty()){
                 std::cout<<"List is already empty\n";
             }
             assert(!empty()); 
-            auto temp = first_;
-            if(size() == 1){
-                first_ = last_ = nullptr;
+            auto temp = first_; // first node wird zwischengespeichert (pointer temp)
+            if(size() == 1){ // falls es nur ein element gibt, sind last und first nullpointer
+                first_ = last_ = nullptr; 
             }
             else{
-                first_-> next->prev = nullptr;
-                first_ = first_->prev;
+                first_-> next->prev = nullptr; // das element nach first: sein prev-pointer ist nun ein nullpointer( da diese nun das neue erste element ist)
+                first_ = first_->next; //der first pointer zeigt nun auf das nächste element
             }
             
-            delete temp;
-            size_--;
+            delete temp; //element wir gelöscht
+            --size_;
         }
 
-/* ... */
+            /* soll das letzte element aus der liste löschen*/
         void pop_back() {
             if (empty()){
                 std::cout<<"List is already empty\n";
@@ -195,23 +206,21 @@ class List {
             
             delete temp;
             size_--;
-            
-
-// not implemented yet
         }
-/* ... */
+
+            /* gibt den wert des ersten elements aus */
         T& front() {
             assert(!empty());
             return first_->value;
         }
 
-/* ... */
+            /* gibt den wert des letzten elements aus */
         T& back() {
             assert(!empty());
                 return last_->value;
             }
         
-/* ... */
+        /* gibt true zurück falls die liste leer ist, ansonsten false */
     bool empty() const{
         if (size_ == 0){
             return true;
@@ -220,7 +229,7 @@ class List {
             return false;
         }
     };
-/* ... */
+        /* gibt die größe der liste zurück */
     std::size_t size() {
         return size_;
     };
