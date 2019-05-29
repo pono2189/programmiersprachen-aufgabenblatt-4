@@ -7,6 +7,7 @@
 # include <initializer_list>
 #include <list>
 
+
 template <typename T>
 class List ;
 
@@ -14,45 +15,51 @@ template <typename T>
 struct ListNode {
     T
     value = T();
-    ListNode* prev = nullptr ;
-    ListNode* next = nullptr ;
+    ListNode* prev = nullptr;
+    ListNode* next = nullptr;
 };
 
 template < typename T >
 struct ListIterator {
     using Self = ListIterator <T >;
     using value_type = T;
-    using pointer = T *;
-    using reference = T &;
+    using pointer = T*;
+    using reference = T&;
     using difference_type = ptrdiff_t ;
     using iterator_category = std::bidirectional_iterator_tag;
 
 
 /* DESCRIPTION operator *() */
-    T& operator *() const {
-// not implemented yet
-        return {};
+    T& operator*() const { //dereferenziert -> value wird zurück gegeben
+        return node->value;
     }
 /* DESCRIPTION operator - >() */
-    T* operator ->() const {
-// not implemented yet
-        return nullptr ;
+    T* operator->() const {
+        return &(node->value); // gibt adresse zurück (pointer)
     }
-/* ... */
-    ListIterator <T>& operator++() {
-    // not implemented yet
-        return {};
+/* ... */ //evtl ändern
+    ListIterator <T>& operator++() { //iterator wird einen weiter gesetzt und gibt
+        //node = node-> next;          // nächsten knotenzurück (temporären knoten)
+        *this = this->next();
+        return *this;
     } // PREINCREMENT
+
 /* ... */
-    ListIterator <T> operator++(int) {
-// not implemented yet
-        return {};
+    ListIterator <T> operator++(int) { //iterator wird einen weitergesetzt und gibt
+        //ListIterator old(*this);
+        //node = node-> next;         // vorherigen knoten zurück
+        auto tmp = *this;
+        *this = tmp;
+        return tmp;
     } // POSTINCREMENT ( signature distinguishes )
+
 /* ... */
-    bool operator ==(ListIterator<T> const& x ) const {
+    bool operator ==(ListIterator<T> const& x) const{ //will testen ob sie auf den gleichen knoten zeigen
+        return x.node == node;                        // pointer x und node
 // // not implemented yet
     }/* ... */
-    bool operator !=(ListIterator<T> const& x ) const {
+    bool operator !=(ListIterator<T> const& x) const{
+        return x.node!= node;
 // // not implemented yet
     }
 /* ... */
@@ -82,7 +89,8 @@ class List {
 
 // not implemented yet
 // do not forget about the initialiser list !
-/* ... */
+
+        /* Standartkonstruktor initialisiet size mit 0, last und first sind nullpointer */
         List ():
             last_{nullptr},
             first_{nullptr},
@@ -94,7 +102,7 @@ class List {
 /* ... */
 // TODO : Move - Konstruktor ( Aufgabe 4.13)// TODO : Initializer - List Konstruktor (4.14)
 /* ... */
-        List ( std :: initializer_list <T > ini_list ) {
+        List ( std::initializer_list <T> ini_list ) {
 // not implemented yet
         }
 /* ... */
@@ -104,7 +112,7 @@ class List {
 /* ... */
 // TODO : operator != ( Aufgabe 4.7)
         /* ... */
-        ~List () {
+        ~List() {
             std::cout << "The List with " << size() << " elements is destroyed\n";
             clear();
 // TO IMPLEMENT PROPERLY
@@ -112,15 +120,18 @@ class List {
 /* ... */
         ListIterator <T> begin() {
             assert(! empty());
-// // not implemented yet
-            return ListIterator <T>{};
+            return ListIterator <T>{first_};
         }
 
 /* ... */
-        ListIterator <T> end() {
+        ListIterator <T> end() { //gibt element "nach letztem element" zurück
+            assert(! empty());   //last_->next
+            return ListIterator<T>{nullptr}; 
+        }
+
+        ListIterator <T> last() { //gibt letztes element zurück 
             assert(! empty());
-// // not implemented yet
-            return ListIterator <T>{};
+            return ListIterator<T>{last_}; 
         }
 
             /* löscht alle elemente aus der liste */

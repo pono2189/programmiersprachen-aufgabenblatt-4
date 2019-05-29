@@ -3,6 +3,7 @@
 #include <list>
 #include "stdio.h"
 #include "List.hpp"
+#include "circle.hpp"
 
 #define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
@@ -82,9 +83,63 @@ TEST_CASE("should be empty after clearing", "[modifiers]"){
     list.push_back(5);   
     list.clear();
     REQUIRE(list.size() == 0);
-    //REQUIRE(list.empty());
 }
 
+TEST_CASE("iterators*", "[iterators]"){
+    List<int> list;
+    list.push_back(1);
+    list.push_back(2); 
+    list.push_back(3);   
+    list.push_back(4);   
+    list.push_back(5);   
+    auto iterator = list.begin();
+    auto value = *(list.begin());
+    REQUIRE(value == 1);
+    iterator++;
+    REQUIRE(*iterator == 1);
+    ++iterator;
+    //REQUIRE(*iterator == 3);
+}
+TEST_CASE("iterators == !=", "[iterators]"){
+    List<int> list;
+    list.push_back(1);
+    list.push_back(2); 
+    list.push_back(3);   
+    list.push_back(4);   
+    list.push_back(5);   
+    auto iterator1 = list.begin();
+    auto iterator2 = list.begin();
+    auto iterator3 = list.end();
+    REQUIRE( iterator1 == iterator2);
+    REQUIRE( iterator1 != iterator3);
+
+}
+
+TEST_CASE("ListIterator", "[circle]"){
+    List<Circle> circle_list; 
+    Circle c = Circle{450.0f,Vec2{200.0f,400.0f},Color{1.0f,0.0f,0.0f},"Circle1"};
+    circle_list.push_back(c);
+
+    auto c_it = circle_list.begin(); 
+    std::cout <<"Der Radius des 1.Circles in der Liste ist: "
+              << c_it->get_radius() <<std::endl; 
+
+}
+
+
+/*TEST_CASE ( " should be an empty range after default construction " ," [ iterators ] " )
+{
+    List <int> list ;
+    auto b = list.begin();
+    auto e = list.end();
+    REQUIRE ( b == e );
+}
+
+TEST_CASE ( " provide access to the first element with begin " , " [ iterators ] " ){
+    List <int> list;
+    list.push_front(42);
+    REQUIRE (42 == *list.begin());
+}*/
  int main(int argc, char *argv[])
 {
   return Catch::Session().run(argc, argv);
