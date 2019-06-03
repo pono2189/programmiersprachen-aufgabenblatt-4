@@ -19,9 +19,9 @@ struct ListNode {
     ListNode* next = nullptr;
 };
 
-template < typename T >
+template <typename T>
 struct ListIterator {
-    using Self = ListIterator <T >;
+    using Self = ListIterator <T>;
     using value_type = T;
     using pointer = T*;
     using reference = T&;
@@ -49,7 +49,7 @@ struct ListIterator {
         //ListIterator old(*this);
         //node = node-> next;         // vorherigen knoten zurück
         auto tmp = *this;
-        *this = tmp;
+        *this = next();
         return tmp;
     } // POSTINCREMENT ( signature distinguishes )
 
@@ -70,8 +70,10 @@ struct ListIterator {
             return ListIterator {nullptr};
         }
     }
+
+   
     
-    ListNode <T >* node = nullptr ;
+    ListNode <T>* node = nullptr ;
 };
 
 
@@ -97,8 +99,20 @@ class List {
             size_{0}
             {}
 
-/* ... */
-// TODO : Copy - Konstruktor using Deep - Copy semantics ( Aufgabe 4.8)
+// Copy - Konstruktor using Deep - Copy semantics ( Aufgabe 4.8)
+        List( List<T> const& list1): //const hizufügen adrian
+            last_{nullptr}, //erstellt default liste
+            first_{nullptr},
+            size_{0}{
+                ListNode<T>* ptr1 = list1.first_;
+                while( ptr1 != nullptr){
+                    push_back(ptr1->value);
+                    ptr1 = ptr1->next; 
+                }
+            }
+        
+	 
+
 /* ... */
 // TODO : Move - Konstruktor ( Aufgabe 4.13)// TODO : Initializer - List Konstruktor (4.14)
 /* ... */
@@ -108,24 +122,25 @@ class List {
 /* ... */
 // TODO : Assignment operator ( Aufgabe 4.12)
 /* ... */
-// TODO : operator == ( Aufgabe 4.7)
-/* ... */
-// TODO : operator != ( Aufgabe 4.7)
+
+
         /* ... */
         ~List() {
-            std::cout << "The List with " << size() << " elements is destroyed\n";
+            //std::cout << "The List with " << size() << " elements is destroyed\n";
             clear();
 // TO IMPLEMENT PROPERLY
         }
 /* ... */
         ListIterator <T> begin() {
-            assert(! empty());
+            if (empty()){
+                return ListIterator<T>{nullptr};
+            }
             return ListIterator <T>{first_};
         }
 
 /* ... */
         ListIterator <T> end() { //gibt element "nach letztem element" zurück
-            assert(! empty());   //last_->next
+               //last_->next
             return ListIterator<T>{nullptr}; 
         }
 
@@ -143,11 +158,39 @@ class List {
 
 
 
-// // not implemented yet
-        /* ... */
-// TODO : member function insert
-/* ... */
-// TODO : member function reverse
+        /* soll ein neues element an einer frei wählbaren position einfügen*/
+        //member function insert
+
+        ListIterator <T> insert(ListIterator <T> & it1, T const& val){
+            if(it1 == begin()){ //falls am anfang eingefügt werden soll
+                push_front(val); 
+                return it1;
+            }
+            else if (it1 == end()){ //falls am ende eingefügt werden soll
+                push_back(val);
+                return it1;
+            }
+            else {            
+                ListNode <T>* n = new ListNode<T>;    //pointer n                  // wert,  prev,     next
+                                                      // n zeigt auf neuen knoten
+                n->value = val; 
+                n->prev = it1.node;
+                n->next = it1.node->next;
+
+                it1.node->next->prev = n;
+                it1.node->next = n; 
+                ++size_;
+                return ++it1;
+
+            }
+        }
+
+
+
+        /* reverse soll die liste "umdrehen", also wird first zu last und andersrum usw.*/
+        
+
+
 
             /* fügt vorne ein element hinzu */
         void push_front(T const& element ){
@@ -228,7 +271,7 @@ class List {
             /* gibt den wert des letzten elements aus */
         T& back() {
             assert(!empty());
-                return last_->value;
+            return last_->value;
             }
         
         /* gibt true zurück falls die liste leer ist, ansonsten false */
@@ -245,10 +288,51 @@ class List {
         return size_;
     };
 
-    private:
+
+ //prüft ob zwei listen komplett identisch sind
+    //bool operator==(List <T> & xs, List<T> & ys){
+    bool operator== (List <T> const& rhs){ 
+        ListNode<T>* ptr1 = first_;
+        ListNode<T>* ptr2 = rhs.first_; 
+        if(size_!=rhs.size_){
+            return false;
+        }    
+        while( ptr1 != nullptr){
+            if (ptr1->value != ptr2->value){
+                    return false;
+                }
+                ptr1 = ptr1->next; 
+                ptr2 = ptr2->next;
+        }
+        
+        return true;
+}
+
+ //prüft ob zwei listen unterschiedlich sind
+    bool operator!=(List<T> const& rhs){
+        return !(*this ==rhs);
+    }
+
+    void reverse(){
+        ListNode<T>* ptr1 = first_;
+        while( ptr1 != nullptr){
+            if(ptr1 == first_){
+
+            }
+
+
+
+            ptr1 = ptr1->next;
+        }
+
+
+    }
+ 
+ private:
         std::size_t size_ ;
         ListNode <T>* first_ ;
         ListNode <T>* last_ ;
+
 };
 /* ... */
 // TODO : Freie Funktion reverse
