@@ -9,6 +9,8 @@
 #include <catch.hpp>
 
 
+
+
 TEST_CASE("show first element with front", "[modifiers]"){
     List<int> list;
 
@@ -85,7 +87,7 @@ TEST_CASE("should be empty after clearing", "[modifiers]"){
     REQUIRE(list.size() == 0);
 }
 
-TEST_CASE("iterators*", "[iterators]"){
+TEST_CASE("iterator * und ++ ", "[iterators]"){
     List<int> list;
     list.push_back(1);
     list.push_back(2); 
@@ -98,7 +100,8 @@ TEST_CASE("iterators*", "[iterators]"){
     REQUIRE(*(iterator++) == 1);
     REQUIRE(*(++iterator) == 3);
 }
-TEST_CASE("iterators == !=", "[iterators]"){
+
+TEST_CASE("iterator == !=", "[iterators]"){
     List<int> list;
     list.push_back(1);
     list.push_back(2); 
@@ -110,7 +113,20 @@ TEST_CASE("iterators == !=", "[iterators]"){
     auto iterator3 = list.end();
     REQUIRE( iterator1 == iterator2);
     REQUIRE( iterator1 != iterator3);
+}
 
+TEST_CASE("iterator next", "[iterators]"){
+    List<int> list;
+    list.push_back(1);
+    list.push_back(2); 
+    list.push_back(3);   
+    list.push_back(4);   
+    list.push_back(5); 
+     
+    auto iterator1 = list.begin();
+    auto iterator2 = list.begin();
+    ++iterator2;
+    REQUIRE( iterator2 == iterator1.next());
 }
 
 TEST_CASE("ListIterator", "[circle]"){
@@ -125,8 +141,7 @@ TEST_CASE("ListIterator", "[circle]"){
 }
 
 
-TEST_CASE ( " should be an empty range after default construction " ," [ iterators ] " )
-{ //aufgabe 6
+TEST_CASE ( " should be an empty range after default construction " ," [ iterators ] " ){ //aufgabe 6
     List <int> list ;
     auto b = list.begin();
     auto e = list.end();
@@ -137,6 +152,30 @@ TEST_CASE ( " provide access to the first element with begin " , " [ iterators ]
     List <int> list;
     list.push_front(42);
     REQUIRE (42 == *list.begin());
+}
+
+TEST_CASE("list empty", "[list]"){
+    List<int> list1;
+    list1.push_back(1);
+    list1.push_back(2); 
+    list1.push_back(3);   
+    list1.push_back(4);   
+    list1.push_back(5); 
+    REQUIRE(!list1.empty());
+    list1.clear();
+    REQUIRE(list1.empty());
+   
+}
+
+TEST_CASE("list size", "[list]"){
+    List<int> list1;
+    list1.push_back(1);
+    list1.push_back(2); 
+    list1.push_back(3);   
+    list1.push_back(4);   
+    list1.push_back(5); 
+    REQUIRE(list1.size() == 5);
+   
 }
 
 TEST_CASE("list == !=", "[list]"){
@@ -190,16 +229,70 @@ TEST_CASE("insert", "[insert]"){
     REQUIRE(*(list.insert(it, 13)) == 13);
 }
 
-/*TEST_CASE("reverse", "[reverse]"){    {
+TEST_CASE("reverse", "[reverse]"){    
         List<int> list;
         list.push_front(1);
         list.push_front(2);
         list.push_front(3);
         list.push_front(4);
+        List<int> list2;
+        list2.push_front(1);
+        list2.push_front(2);
+        list2.push_front(3);
+        list2.push_front(4);
+        List<int> listr;
+        listr.push_front(4);
+        listr.push_front(3);
+        listr.push_front(2);
+        listr.push_front(1);
+        //memberfunktion
         list.reverse();
-        REQUIRE(1 == list.front());    
+        REQUIRE(1 == *(list.begin()));
+        REQUIRE(list == listr);
+        //freie funktion
+        List<int>list3 = reverse(list);
+        REQUIRE(list3 == list2);
+
+}
+
+TEST_CASE ( "move constructor" , " [ constructor ] " )
+{
+    List <int> list;
+    list.push_front(1);
+    list.push_front(2);
+    list.push_front(3);
+    list.push_front(4);
+    List <int> list2 = std::move(list);
+    REQUIRE(0 == list.size());
+    REQUIRE(list.empty());
+    REQUIRE(4 == list2.size());
+}
+
+/*TEST_CASE ( "list operator=" , " [ lists ] " )
+{
+    List <int> list;
+    list.push_front(1);
+    list.push_front(2);
+    list.push_front(3);
+    list.push_front(4);
+    List <int> list2;
+    list2 = list;
+    REQUIRE(list2 == list);
 }*/
 
+//Aufgabe 4.11
+TEST_CASE ("std::copy", "[lists]"){
+    List <int> list;
+    list.push_front(1);
+    //list.push_front(2);
+    //list.push_front(3);
+    //list.push_front(4);
+    std::vector<int> g1; 
+
+    std::copy(list.begin(), list.end(),
+    std::back_inserter(g1));
+    REQUIRE(*g1.begin() == *list.begin());
+}
 
  int main(int argc, char *argv[])
 {
